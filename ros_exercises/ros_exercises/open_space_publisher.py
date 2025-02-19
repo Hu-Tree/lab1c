@@ -4,6 +4,7 @@ import math
 from rclpy.node import Node
 
 from std_msgs.msg import Float32
+from custom_msgs.msg import OpenSpace
 from sensor_msgs.msg import LaserScan
 
 
@@ -11,10 +12,11 @@ class OpenSpacePublisher(Node):
 
     def __init__(self):
         super().__init__("open_space_publisher")
-        self.distance_publisher_ = self.create_publisher(
-            Float32, "open_space/distance", 10
-        )
-        self.angle_publisher_ = self.create_publisher(Float32, "open_space/angle", 10)
+        self.publisher_ = self.create_publisher(OpenSpace, "open_space", 10)
+        # self.distance_publisher_ = self.create_publisher(
+        #     Float32, "open_space/distance", 10
+        # )
+        # self.angle_publisher_ = self.create_publisher(Float32, "open_space/angle", 10)
         self.subscription = self.create_subscription(
             LaserScan, "fake_scan", self.listener_callback, 10
         )
@@ -25,16 +27,22 @@ class OpenSpacePublisher(Node):
         for index, dist in enumerate(scan.ranges):
             if dist > maxDist:
                 maxIndex, maxDist = index, dist
-        distMsg = Float32()
-        distMsg.data = maxDist
-        self.distance_publisher_.publish(distMsg)
+        msg = OpenSpace()
+        msg.distance = maxDist
+        msg.angle = maxIndex * scan.angle_increment + scan.angle_min
 
-        angleMsg = Float32()
-        angleMsg.data = maxIndex * scan.angle_increment + scan.angle_min
-        self.angle_publisher_.publish(angleMsg)
+        self.publisher_.publish(msg)
+        self.get_logger().info("Max Distance: %s" % msg.distance)
+        # distMsg = Float32()
+        # distMsg.data = maxDist
+        # self.distance_publisher_.publish(distMsg)
 
-        self.get_logger().info("Max Distance: %s" % distMsg.data)
-        self.get_logger().info("Angle: %s" % angleMsg.data)
+        # angleMsg = Float32()
+        # angleMsg.data = maxIndex * scan.angle_increment + scan.angle_min
+        # self.angle_publisher_.publish(angleMsg)
+
+        # self.get_logger().info("Max Distance: %s" % distMsg.data)
+        # self.get_logger().info("Angle: %s" % angleMsg.data)
 
 
 def main(args=None):
