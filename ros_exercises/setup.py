@@ -21,6 +21,7 @@ setup(
         "console_scripts": [
             "simple_publisher = ros_exercises.simple_publisher:main",
             "simple_subscriber = ros_exercises.simple_subscriber:main",
+            "fake_scan_publisher = ros_exercises.fake_scan_publisher:main",
         ],
     },
 )
