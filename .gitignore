@@ -1,3 +1,7 @@
 __pycache__
 .vscode
 .DS_Store
+ros_exercises/rosbag/map_file/map_file.db3
+ros_exercises/rosbag/one_loop/one_loop.db3
+ros_exercises/rosbag/map_file/metadata.yaml
+ros_exercises/rosbag/one_loop/metadata.yaml
