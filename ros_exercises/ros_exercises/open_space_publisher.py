@@ -12,13 +12,25 @@ class OpenSpacePublisher(Node):
 
     def __init__(self):
         super().__init__("open_space_publisher")
-        self.publisher_ = self.create_publisher(OpenSpace, "open_space", 10)
+        self.declare_parameters(
+            namespace="",
+            parameters=[
+                ("pub_topic_name", "open_space"),
+                ("sub_topic_name", "fake_scan"),
+            ],
+        )
+        self.publisher_ = self.create_publisher(
+            OpenSpace, self.get_parameter("pub_topic_name").value, 10
+        )
         # self.distance_publisher_ = self.create_publisher(
         #     Float32, "open_space/distance", 10
         # )
         # self.angle_publisher_ = self.create_publisher(Float32, "open_space/angle", 10)
         self.subscription = self.create_subscription(
-            LaserScan, "fake_scan", self.listener_callback, 10
+            LaserScan,
+            self.get_parameter("sub_topic_name").value,
+            self.listener_callback,
+            10,
         )
 
     def listener_callback(self, scan):
